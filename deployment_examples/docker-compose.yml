@@ -1,0 +1,25 @@
+version: "3.1"
+services:
+  naemon-core:
+    volumes:
+      - ipc:/var/lib/merlin/
+      - merlin_config:/etc/merlin/
+    image: op5com/merlin-naemon:latest
+    environment:
+      # Needed for automatically adding the new poller to the cluster
+      MASTER_ADDRESS:
+      MASTER_NAME:
+      MASTER_PORT:
+      POLLER_ADDRESS:
+      POLLER_NAME:
+      POLLER_HOSTGROUPS:
+      LOG_LEVEL: # debug, info (default), error, critical
+      FILES_TO_SYNC:
+  naemon-merlin:
+    volumes:
+      - ipc:/var/lib/merlin/
+      - merlin_config:/etc/merlin/
+    image: op5com/merlin-merlind:latest
+volumes:
+  ipc:
+  merlin_config:

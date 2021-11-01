@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: merlin-poller
+  name: merlin-poller
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: merlin-poller
+      name: merlin-poller
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: merlin-poller
+        name: merlin-poller
+    spec:
+      volumes:
+        - name: ipc
+          emptyDir: {}
+        - name: merlin-conf
+          emptyDir: {}
+      terminationGracePeriodSeconds: 120
+      containers:
+       - name: naemon-core
+         image: op5com/merlin-naemon:latest
+         imagePullPolicy: Never
+         resources:
+         volumeMounts:
+          - mountPath: /var/lib/merlin/
+            name: ipc
+          - mountPath: /etc/merlin/
+            name: merlin-conf
+         livenessProbe:
+           exec:
+             command:
+             - /usr/bin/mon
+             - containerhealth
+             - core
+           initialDelaySeconds: 120
+           periodSeconds: 30
+           failureThreshold: 5
+         env:
+         - name: MASTER_ADDRESS
+           value: ""
+         - name: MASTER_NAME
+           value: ""
+         - name: MASTER_PORT
+           value: ""
+         - name: POLLER_ADDRESS
+           valueFrom:
+             fieldRef:
+               fieldPath: status.podIP
+         - name: POLLER_NAME
+           valueFrom:
+             fieldRef:
+               fieldPath: metadata.name
+         - name: POLLER_HOSTGROUPS
+           value: ""
+         - name: FILES_TO_SYNC
+           value: ""
+         - name: LOG_LEVEL
+           value: ""
+       - name: naemon-merlin
+         image: op5com/merlin-merlind:latest
+         imagePullPolicy: Never
+        livenessProbe:
+           exec:
+             command:
+             - /usr/bin/mon
+             - containerhealth
+             - merlin
+           initialDelaySeconds: 20
+           periodSeconds: 30
+         ports:
+          - containerPort: 15551
+            name: merlin
+            protocol: TCP
+         volumeMounts:
+          - mountPath: /var/lib/merlin/
+            name: ipc
+          - mountPath: /etc/merlin
+            name: merlin-conf
+      restartPolicy: Always
