@@ -27,7 +27,6 @@ spec:
       containers:
        - name: naemon-core
          image: op5com/merlin-naemon:latest
-         imagePullPolicy: Never
          resources:
          volumeMounts:
           - mountPath: /var/lib/merlin/
@@ -66,8 +65,7 @@ spec:
            value: ""
        - name: naemon-merlin
          image: op5com/merlin-merlind:latest
-         imagePullPolicy: Never
-        livenessProbe:
+         livenessProbe:
            exec:
              command:
              - /usr/bin/mon
@@ -84,4 +82,3 @@ spec:
             name: ipc
           - mountPath: /etc/merlin
             name: merlin-conf
-      restartPolicy: Always
