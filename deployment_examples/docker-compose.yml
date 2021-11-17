@@ -1,6 +1,6 @@
 version: "3.1"
 services:
-  naemon-core:
+  merlin-naemon:
     volumes:
       - ipc:/var/lib/merlin/
       - merlin_config:/etc/merlin/
@@ -13,13 +13,13 @@ services:
       POLLER_ADDRESS:
       POLLER_NAME:
       POLLER_HOSTGROUPS:
-      LOG_LEVEL: # debug, info (default), error, critical
+      LOG_LEVEL: "info" # debug, info (default), error, critical
       FILES_TO_SYNC:
-  naemon-merlin:
+  merlin-daemon:
     volumes:
       - ipc:/var/lib/merlin/
       - merlin_config:/etc/merlin/
-    image: op5com/merlin-merlind:latest
+    image: op5com/merlin-daemon:latest
 volumes:
   ipc:
   merlin_config:
