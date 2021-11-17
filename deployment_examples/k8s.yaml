@@ -62,9 +62,9 @@ spec:
          - name: FILES_TO_SYNC
            value: ""
          - name: LOG_LEVEL
-           value: ""
+           value: "INFO"
        - name: naemon-merlin
-         image: op5com/merlin-merlind:latest
+         image: op5com/merlin-daemon:latest
          livenessProbe:
            exec:
              command:
